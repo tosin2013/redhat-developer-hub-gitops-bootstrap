@@ -8,8 +8,10 @@
     # Dev Preview
     # rhdh_helm_chart_version: "0.2.0"
     # rhdh_image_version: "1.0-88"
-    rhdh_helm_chart_version: "1.2.1"
-    rhdh_image_version: "1.2-132"
+    # helm search repo openshift | grep redhat-developer-hub
+    #  helm search repo openshift/redhat-developer-hub --versions
+    rhdh_helm_chart_version: "1.2.3"
+    rhdh_image_version: "1.2-136"
     rhdh_helm_values_file: "rhdh-10ga-helm-values.yaml"
     git_system: "github"
     github_host: "github.com"
@@ -23,7 +25,7 @@
     argocd_namespace: "openshift-gitops"
     vault_namespace: "vault"
     keycloak_host: ""
-    backstage_gitops_repo: "https://github.com/redhat-na-ssa/redhat-developer-hub-gitops-bootstrap.git"
+    backstage_gitops_repo: "https://github.com/tosinsdeveloperhub/redhat-developer-hub-gitops-development.git"
     quay_registry_server_url: "{{ lookup('ansible.builtin.env', 'QUAY_SERVER_URL') }}"
 
   tasks:

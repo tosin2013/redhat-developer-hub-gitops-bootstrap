@@ -2,13 +2,12 @@
 
 if [ -f .venv/bin/activate ]; then
   echo "Virtual environment already exists. Skipping setup."
+  source .venv/bin/activate
 else
     python3 -m venv .venv
     source .venv/bin/activate
     python3 -m pip install --upgrade pip
     python3 -m pip install ansible hvac kubernetes
-    source .venv/bin/activate
-else 
     source .venv/bin/activate
 fi
 
@@ -105,6 +104,7 @@ separator
 # GitHub App ID
 prompt_input "GITHUB_APP_APP_ID" \
     "Enter your GitHub App ID:" \
+    "Example URL: https://github.com/organizations/your-url/settings/apps/tour-developerhub-app" \
     "123456" \
     "https://docs.github.com/en/developers/apps/building-github-apps/creating-a-github-app"
 

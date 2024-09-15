@@ -125,9 +125,11 @@
     helm repo update
     helm upgrade -i developer-hub \
       -f "/tmp/{{ rhdh_helm_values_file }}" \
-      openshift-helm-charts/redhat-developer-hub \
+      openshift/redhat-developer-hub \
       --version "{{ rhdh_helm_chart_version }}" \
       --namespace "{{ idp_namespace }}"
+  ignore_errors: true
+
 
 # - name: Deploy RHDH chart on 1.0.0 with values loaded from template
 #   kubernetes.core.helm:

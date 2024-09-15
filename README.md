@@ -163,6 +163,10 @@ export QUAY_TOKEN=a-quay-oauth-app-token-with-admin-permissions
 
 ```sa
 source .ignored/env.sh
+export OC_TOKEN=sha256~token
+export cluster_api_url=https://api.openshift-ai.example.com:6443
+export ENV_SCRIPT_PATH=/home/lab-user/redhat-developer-hub-gitops-bootstrap/.ignored/env.sh
+export GITHUB_APP_PRIVATE_KEY_FILE=/home/lab-user/redhat-developer-hub-gitops-bootstrap/.ignored/your-github-app.private-key.pem
 ```
 
 ### running Ansible Playbooks

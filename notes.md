@@ -27,11 +27,43 @@ The following components should be provisioned by ArgoCD in your cluster:
  vim ./quickstart.sh
  ./quickstart.sh
  ```
-3. bootstrap-scripts/enable-htpasswd-users.sh
+3. ./bootstrap-scripts/enable-htpasswd-users.sh
 4. Open the [root-app/app-of-apps.yaml](root-app/app-of-apps.yaml) file and replace any occurency of `redhat-na-ssa` value by your own github profile name (wherever you forked this repo into). 
 
+5. Change the Vault Config resource kustomization file
+Because we are using GitOps to configure the Vault Config Operator resources (CRs), we need to replace some values and then commit/push these changes to your forked git repo before we can proceed.
+
+Open the [operators/hashicorp-vault/kustomize/overlays/vault-config/kustomization.yaml](operators/hashicorp-vault/kustomize/overlays/vault-config/kustomization.yaml) file and replace any parameter value you see a replace by... comment.
+
+6. Update the following file [ansible-automation/playbooks/rhdh-install/main.yaml](ansible-automation/playbooks/rhdh-install/main.yaml)
 * save, commit and push this change!!!
 * authenticate as a cluster-admin on your cluster and execute
+
+## Confgure Environment Variables
+```
+source .venv/bin/activate
+source .ignored/env.sh
+export OC_TOKEN=sha256~aLejMLQn4MveklMRThvzsSMNocImcxOHZFYgeIeFddA
+export cluster_api_url=https://api.test-cluster.example.com:6443
+export ENV_SCRIPT_PATH=/home/example-user/redhat-developer-hub-gitops-bootstrap/.ignored/env.sh
+export GITHUB_APP_PRIVATE_KEY_FILE=/home/example-user/redhat-developer-hub-gitops-development/.ignored/github-app.private-key.pem
+```
+
+## Bootstrap the Environment
+```
+ ./bootstrap-scripts/cluster-boostrap.sh 
+```
+
+After running both scripts, you can run the playbook using the following command:
+
+```bash
+ansible-playbook ansible-automation/playbooks/vault-setup/main.yaml
+```
+
+To install and configure Red Hat Developer Hub, run
+```bash
+ansible-playbook ansible-automation/playbooks/rhdh-install/main.yaml
+```
 
 ## Uninstall the Environment
 

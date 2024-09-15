@@ -205,8 +205,8 @@ upstream:
 
     initContainers:
       - command:
-          # - python
-          - install-dynamic-plugins.sh #.py
+          - python
+          - install-dynamic-plugins.py #.py
           - /dynamic-plugins-root
         env:
           - name: NPM_CONFIG_USERCONFIG
