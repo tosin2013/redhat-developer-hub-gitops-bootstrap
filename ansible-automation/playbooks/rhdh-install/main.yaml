@@ -9,7 +9,7 @@
     # rhdh_helm_chart_version: "0.2.0"
     # rhdh_image_version: "1.0-88"
     rhdh_helm_chart_version: "1.2.1"
-    rhdh_image_version: "1.2.105"
+    rhdh_image_version: "1.2-132"
     rhdh_helm_values_file: "rhdh-10ga-helm-values.yaml"
     git_system: "github"
     github_host: "github.com"

@@ -11,13 +11,76 @@
     vault_cluster_name: "dev-cluster"
 
   tasks:
+    - name: Check if quicksetup.sh has been run
+      ansible.builtin.fail:
+        msg: "The quicksetup.sh script has not been run. Please run it before running the playbook."
+      when: lookup('ansible.builtin.env', 'QUICKSETUP_RUN') is not defined or lookup('ansible.builtin.env', 'QUICKSETUP_RUN') != 'true'
+
+    - name: Check for GITHUB_APP_PRIVATE_KEY_FILE environment variable
+      ansible.builtin.fail:
+        msg: "GITHUB_APP_PRIVATE_KEY_FILE environment variable is not set. Please set it before running the playbook."
+      when: lookup('ansible.builtin.env', 'GITHUB_APP_PRIVATE_KEY_FILE') is not defined
+    - name: Source environment variables from .ignored/env.sh
+      ansible.builtin.shell: |
+        source "{{ lookup('env', 'ENV_SCRIPT_PATH') }}"
+      changed_when: false
+    - name: Check Kubernetes configuration
+      ansible.builtin.command:
+        cmd: kubectl config view
+      register: k8s_config
+      failed_when: k8s_config.rc != 0
+      changed_when: false
+      ignore_errors: true
+
+    - name: Validate Kubernetes configuration
+      ansible.builtin.command:
+        cmd: kubectl cluster-info
+      register: k8s_cluster_info
+      failed_when: k8s_cluster_info.rc != 0
+      changed_when: false
+      when: k8s_config.rc == 0
+      ignore_errors: true
+
+    - name: Set Kubernetes configuration if not set
+      ansible.builtin.set_fact:
+        kubeconfig: "{{ lookup('env', 'KUBECONFIG') | default('/path/to/default/kubeconfig', true) }}"
+      when: k8s_config.rc != 0 or k8s_cluster_info.rc != 0
+
+    - name: Check for OC_TOKEN environment variable
+      ansible.builtin.set_fact:
+        oc_token: "{{ lookup('env', 'OC_TOKEN') }}"
+      when: lookup('env', 'OC_TOKEN') is defined
+
+    - name: Fail if OC_TOKEN is not set
+      ansible.builtin.fail:
+        msg: "OC_TOKEN environment variable is not set. Please set it before running the playbook."
+      when: oc_token is not defined
+
+    - name: Check for cluster_api_url environment variable
+      ansible.builtin.set_fact:
+        cluster_api_url: "{{ lookup('env', 'cluster_api_url') }}"
+      when: lookup('env', 'cluster_api_url') is defined
+
+    - name: Fail if cluster_api_url is not set
+      ansible.builtin.fail:
+        msg: "cluster_api_url environment variable is not set. Please set it before running the playbook."
+      when: cluster_api_url is not defined
+
+    - name: Login to OpenShift using OC_TOKEN
+      ansible.builtin.command:
+        cmd: oc login --token={{ oc_token }} --server={{ cluster_api_url }} --insecure-skip-tls-verify=true
+      register: oc_login_result
+      failed_when: oc_login_result.rc != 0
+      changed_when: false
+      when: oc_token is defined and cluster_api_url is defined
+
     - name: Retrieve Ingress config
       kubernetes.core.k8s_info:
         api_version: config.openshift.io/v1
-        
         kind: Ingress
         name: cluster
       register: r_ingress_config
+      when: oc_login_result.rc == 0
 
     - name: Retrieve Infrastructure config
       kubernetes.core.k8s_info:
@@ -36,6 +99,17 @@
         msg:
           - "apps_cluster_domain: {{ apps_cluster_domain }}"
           - "cluster_api_url: {{ cluster_api_url }}"
+
+    - name: Read Github App Private Key
+      ansible.builtin.set_fact:
+        github_private_key_content: "{{ lookup('ansible.builtin.file', lookup('ansible.builtin.env', 'GITHUB_APP_PRIVATE_KEY_FILE')) }}"
+      when: lookup('ansible.builtin.env', 'GITHUB_APP_PRIVATE_KEY_FILE') is defined
+
+    - name: Populate Vault with Github Secrets
+      ansible.builtin.include_tasks:
+        file: ./setup_vault.yml
+      vars:
+        github_private_key_content: "{{ github_private_key_content | default('') }}"
 
     - name: Setup Vault
       ansible.builtin.include_tasks:
