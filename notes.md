@@ -24,8 +24,8 @@ The following components should be provisioned by ArgoCD in your cluster:
 
  2. Populate and run the script below 
  ```
- vim ./quickstart.sh
- ./quickstart.sh
+ vim ./quicksetup.sh
+ ./quicksetup.sh
  ```
 3. ./bootstrap-scripts/enable-htpasswd-users.sh
 4. Open the [root-app/app-of-apps.yaml](root-app/app-of-apps.yaml) file and replace any occurency of `redhat-na-ssa` value by your own github profile name (wherever you forked this repo into). 
