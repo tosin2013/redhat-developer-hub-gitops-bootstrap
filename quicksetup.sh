@@ -9,13 +9,19 @@ fi
 # Set up environment variables
 K8S_CLUSTER_API=$(oc get Infrastructure.config.openshift.io cluster -o=jsonpath="{.status.apiServerURL}")
 OPENSHIFT_CLUSTER_INFO=$(echo $K8S_CLUSTER_API | sed 's/^.*https...api//' | sed 's/.6443.*$//')
+echo ${OPENSHIFT_CLUSTER_INFO}
 GITHUB_HOST_DOMAIN=github.com # if using a hosted Enterprise GitHub replace github.com by your internal domain.
 GITHUB_ORGANIZATION=tosinsdeveloperhub
+HOMEPAGE_URL="dev"
+
+# Get the repository name from the current working directory
+GITHUB_REPO_NAME=$(basename "$(git rev-parse --show-toplevel)")
+
 GITHUB_ORG_URL=https://$GITHUB_HOST_DOMAIN/$GITHUB_ORGANIZATION
 echo "GITHUB_ORG_URL=$GITHUB_ORG_URL"
 
 # Create a new GitHub Application URL
-GITHUB_APP_URL="https://$GITHUB_HOST_DOMAIN/organizations/$GITHUB_ORGANIZATION/settings/apps/new?name=$GITHUB_ORGANIZATION-rhdh-app&url=https://janus-idp.io/blog&webhook_active=true&public=false&callback_url=https://developer-hub-rhdh.apps$OPENSHIFT_CLUSTER_INFO/api/auth/github/handler/frame&webhook_url=https://developer-hub-rhdh.apps$OPENSHIFT_CLUSTER_INFO&administration=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write&members=read"
+GITHUB_APP_URL="https://$GITHUB_HOST_DOMAIN/organizations/$GITHUB_ORGANIZATION/settings/apps/new?name=$GITHUB_REPO_NAME-app&url=https://devspaces.apps${OPENSHIFT_CLUSTER_INFO}&webhook_active=true&public=false&callback_url=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO/api/oauth/callback&webhook_url=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO&administration=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write&members=read"
 
 # Echo the GitHub Application URL
 echo "Please visit the following URL to create a new GitHub Application:"

@@ -16,16 +16,18 @@ The following components should be provisioned by ArgoCD in your cluster:
 
 # First things first
 
-[**Fork this repo**](https://github.com/redhat-na-ssa/redhat-developer-hub-gitops-bootstrap/fork) into your own GitHub profile and **Clone it** locally.
-
+[**Fork this repo**](https://github.com/tosin2013/redhat-developer-hub-gitops-bootstrap/fork) into your own GitHub profile and **Clone it** locally.
+![20240917163709](https://i.imgur.com/zABkvTE.png)
 ## Setup a GitHub Org and an Application
 
  1. Create a new [**Github Organization**](https://github.com/account/organizations/new?plan=free). This organization will contain the code repositories for the `components` created by Red Hat Developer Hub.
 
  2. Populate and run the script below 
  ```
- vim ./quickstart.sh
- ./quickstart.sh
+
+ vim ./quicksetup.sh
+ ./quicksetup.sh
+ ./setup_env.sh
  ```
 3. ./bootstrap-scripts/enable-htpasswd-users.sh
 4. Open the [root-app/app-of-apps.yaml](root-app/app-of-apps.yaml) file and replace any occurency of `redhat-na-ssa` value by your own github profile name (wherever you forked this repo into). 
