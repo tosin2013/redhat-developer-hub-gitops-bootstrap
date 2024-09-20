@@ -27,12 +27,12 @@ The following components should be provisioned by ArgoCD in your cluster:
 
  vim ./quicksetup.sh
  ./quicksetup.sh
- ./setup_env.sh
  ```
-3. ./bootstrap-scripts/enable-htpasswd-users.sh
-4. Open the [root-app/app-of-apps.yaml](root-app/app-of-apps.yaml) file and replace any occurency of `redhat-na-ssa` value by your own github profile name (wherever you forked this repo into). 
+3.  ./bootstrap-scripts/setup-github-oauth.sh
+4.   ./setup_env.sh
+5. Open the [root-app/app-of-apps.yaml](root-app/app-of-apps.yaml) file and replace any occurency of `redhat-na-ssa` value by your own github profile name (wherever you forked this repo into). 
 
-5. Change the Vault Config resource kustomization file
+6. Change the Vault Config resource kustomization file
 Because we are using GitOps to configure the Vault Config Operator resources (CRs), we need to replace some values and then commit/push these changes to your forked git repo before we can proceed.
 
 Open the [operators/hashicorp-vault/kustomize/overlays/vault-config/kustomization.yaml](operators/hashicorp-vault/kustomize/overlays/vault-config/kustomization.yaml) file and replace any parameter value you see a replace by... comment.
