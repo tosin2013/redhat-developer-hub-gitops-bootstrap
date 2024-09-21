@@ -24,12 +24,12 @@ The following components should be provisioned by ArgoCD in your cluster:
 
  2. Populate and run the script below 
  ```
-
- vim ./quicksetup.sh
+oc login --token=sha256~XXXXX --server=https://api.test-cluster.example.com:6443
  ./quicksetup.sh
+ ./setup_env.sh
  ```
-3.  ./bootstrap-scripts/setup-github-oauth.sh
-4.   ./setup_env.sh
+3.  `./bootstrap-scripts/setup-github-oauth.sh`
+4.   `./setup_env.sh`
 5. Open the [root-app/app-of-apps.yaml](root-app/app-of-apps.yaml) file and replace any occurency of `redhat-na-ssa` value by your own github profile name (wherever you forked this repo into). 
 
 6. Change the Vault Config resource kustomization file
